@@ -85,8 +85,11 @@ export interface SynthesisResponse {
  * Automatically falls back to high-fidelity client-side mock synthesis if backend is offline.
  */
 export async function generateSyntheticData(payload: SynthesisPayload): Promise<SynthesisResponse> {
-  const API_BASE = (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_API_URL) || "http://127.0.0.1:8000";
-  const url = `${API_BASE}/api/v1/generate`;
+  const boundServiceUrl = typeof process !== "undefined" ? process.env?.APP_URL : undefined;
+  const publicApiUrl = typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_API_URL : undefined;
+  const url = boundServiceUrl
+    ? new URL("/api/v1/generate", boundServiceUrl).toString()
+    : `${publicApiUrl || ""}/api/v1/generate`;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 4000);

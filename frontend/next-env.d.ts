@@ -3,6 +3,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: "development" | "production" | "test";
+    readonly APP_URL?: string;
     readonly NEXT_PUBLIC_API_URL?: string;
     [key: string]: string | undefined;
   }
@@ -59,6 +60,15 @@ declare module "next" {
     title?: string;
     description?: string;
     [key: string]: any;
+  }
+}
+
+declare module "next/server" {
+  export class NextRequest extends Request {
+    nextUrl: URL;
+  }
+  export class NextResponse extends Response {
+    static json(body: any, init?: ResponseInit): NextResponse;
   }
 }
 
